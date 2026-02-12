@@ -1,0 +1,42 @@
+<style>
+    .cli-box {
+        background: #000;
+        color: #0f0;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: 'Courier New', Courier, monospace;
+        margin-top: 10px;
+        position: relative;
+        border: 1px solid #333;
+    }
+    .copy-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: var(--azure-blue);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 0.7rem;
+    }
+</style>
+
+<div class="cli-box">
+    <button class="copy-btn" onclick="copyCLI()">Copy All</button>
+    <code id="cli-code">
+        # 1. Create Resource Group<br>
+        az group create --name rg-az104-web-prod --location eastus<br><br>
+        # 2. Create VNet & Subnet<br>
+        az network vnet create --name vnet-az104-prod --resource-group rg-az104-web-prod --address-prefix 10.0.0.0/16 --subnet-name snet-web-prod --subnet-prefix 10.0.1.0/24
+    </code>
+</div>
+
+<script>
+    function copyCLI() {
+        const code = document.getElementById('cli-code').innerText;
+        navigator.clipboard.writeText(code);
+        alert("Commands copied to clipboard!");
+    }
+    // ... [Keep your updateProgress function from before] ...
+</script>
