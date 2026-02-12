@@ -1,42 +1,225 @@
-<style>
-    .cli-box {
-        background: #000;
-        color: #0f0;
-        padding: 15px;
-        border-radius: 5px;
-        font-family: 'Courier New', Courier, monospace;
-        margin-top: 10px;
-        position: relative;
-        border: 1px solid #333;
-    }
-    .copy-btn {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        background: var(--azure-blue);
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 0.7rem;
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ104-PROJ-01 | Command Center</title>
+    <style>
+        :root {
+            --azure-blue: #0078d4;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+            --success: #28a745;
+        }
 
-<div class="cli-box">
-    <button class="copy-btn" onclick="copyCLI()">Copy All</button>
-    <code id="cli-code">
-        # 1. Create Resource Group<br>
-        az group create --name rg-az104-web-prod --location eastus<br><br>
-        # 2. Create VNet & Subnet<br>
-        az network vnet create --name vnet-az104-prod --resource-group rg-az104-web-prod --address-prefix 10.0.0.0/16 --subnet-name snet-web-prod --subnet-prefix 10.0.1.0/24
-    </code>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--azure-blue);
+            padding-bottom: 10px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #333;
+            border-radius: 20px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #0078d4, #00bcf2);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .phase-section {
+            background: var(--card-bg);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            transition: all 0.3s;
+        }
+
+        .task-item:last-child { border-bottom: none; }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .task-text {
+            font-size: 1.1rem;
+        }
+
+        .completed {
+            color: var(--text-dim);
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .stats {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--azure-blue);
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            background: #333;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>AZ104-PROJ-01: Secure Infrastructure</h1>
+        <p>Architect & Mentor Blueprint Dashboard</p>
+    </header>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>Overall Implementation</h3>
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <p>Project Completion: <span id="progress-text">0%</span></p>
+        </div>
+        <div class="card">
+            <h3>System Health</h3>
+            <div class="stats" id="tasks-count">0 / 12</div>
+            <p>Tasks Finalized</p>
+        </div>
+    </div>
+
+    <div class="phase-section">
+        <h2>Phase 1: Planning & Design (The Blueprint)</h2>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Define Naming Convention (vnet-az104-prod)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Lock IP Schema (VNet 10.0.0.0/16 | Subnet /24)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Select Target Azure Region (Cost & Latency)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Design Traffic Flow (NSG Inbound Rules Plan)</div>
+        </div>
+    </div>
+
+    <div class="phase-section">
+        <h2>Phase 2: Core Infrastructure (The Skeleton)</h2>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Deploy Resource Group (rg-az104-web-prod)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Create Virtual Network (VNet)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Segment Subnets (Web & Management)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Deploy Network Security Group (NSG)</div>
+        </div>
+    </div>
+
+    <div class="phase-section">
+        <h2>Phase 3: Compute & Security (The Brain)</h2>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Provision Windows Server VM (B-Series)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Configure Inbound RDP Rule (Locked to My IP)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Enable Auto-Shutdown (Cost Control)</div>
+        </div>
+        <div class="task-item">
+            <input type="checkbox" onclick="updateProgress(this)">
+            <div class="task-text">Verify Connectivity (The 'Success' Ping)</div>
+        </div>
+    </div>
 </div>
 
 <script>
-    function copyCLI() {
-        const code = document.getElementById('cli-code').innerText;
-        navigator.clipboard.writeText(code);
-        alert("Commands copied to clipboard!");
+    function updateProgress(checkbox) {
+        const textElement = checkbox.nextElementSibling;
+        if (checkbox.checked) {
+            textElement.classList.add('completed');
+        } else {
+            textElement.classList.remove('completed');
+        }
+
+        const totalTasks = document.querySelectorAll('input[type="checkbox"]').length;
+        const completedTasks = document.querySelectorAll('input[type="checkbox"]:checked').length;
+        
+        const percentage = Math.round((completedTasks / totalTasks) * 100);
+        
+        document.getElementById('progress-bar').style.width = percentage + '%';
+        document.getElementById('progress-text').innerText = percentage + '%';
+        document.getElementById('tasks-count').innerText = completedTasks + ' / ' + totalTasks;
     }
-    // ... [Keep your updateProgress function from before] ...
 </script>
+
+</body>
+</html>
