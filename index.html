@@ -3,222 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZ104-PROJ-01 | Command Center</title>
+    <title>AZ104-PROJ-01 | Architect Dashboard</title>
     <style>
         :root {
-            --azure-blue: #0078d4;
-            --bg-dark: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-dim: #888;
-            --success: #28a745;
+            --primary: #0078d4;
+            --bg: #f3f2f1;
+            --card: #ffffff;
+            --text: #323130;
+            --ac-bg: #f8f9fa;
+            --done: #107c10;
         }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        /* Header & Progress Stats */
+        .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
+        .progress-container { background: #edebe9; border-radius: 10px; height: 20px; width: 100%; margin-bottom: 30px; overflow: hidden; }
+        #progress-bar { background: var(--done); height: 100%; width: 35%; transition: width 0.5s ease; }
+        
+        /* Epic & Story Styling */
+        .epic { background: var(--card); border-radius: 8px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .epic-title { color: var(--primary); font-size: 1.4em; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .story { margin-left: 20px; margin-bottom: 25px; padding-left: 20px; border-left: 2px solid #deecf9; }
+        .story-title { font-weight: 700; font-size: 1.1em; color: #004578; display: block; margin-bottom: 10px; }
+        
+        /* Tasks */
+        .task-list { list-style: none; padding: 0; }
+        .task-item { margin-bottom: 8px; display: flex; align-items: center; }
+        input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
+        
+        /* Acceptance Criteria */
+        .ac-box { background: var(--ac-bg); border: 1px dashed #c8c6c4; padding: 15px; border-radius: 4px; margin-top: 10px; }
+        .ac-title { font-size: 0.8em; font-weight: bold; color: #605e5c; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .ac-list { margin: 0; padding-left: 20px; font-size: 0.9em; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            max-width: 900px;
-            width: 100%;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--azure-blue);
-            padding-bottom: 10px;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        .progress-container {
-            width: 100%;
-            background: #333;
-            border-radius: 20px;
-            height: 25px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #0078d4, #00bcf2);
-            transition: width 0.5s ease-in-out;
-        }
-
-        .phase-section {
-            background: var(--card-bg);
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #333;
-            transition: all 0.3s;
-        }
-
-        .task-item:last-child { border-bottom: none; }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        .task-text {
-            font-size: 1.1rem;
-        }
-
-        .completed {
-            color: var(--text-dim);
-            text-decoration: line-through;
-            opacity: 0.6;
-        }
-
-        .stats {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--azure-blue);
-        }
-
-        .status-tag {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            background: #333;
-            margin-top: 10px;
-        }
+        /* Status Badges */
+        .badge { font-size: 0.7em; padding: 4px 12px; border-radius: 15px; font-weight: bold; }
+        .status-done { background: #dff6dd; color: #107c10; }
+        .status-active { background: #c7e0f4; color: #005a9e; }
+        .status-future { background: #fff4ce; color: #797775; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>AZ104-PROJ-01: Secure Infrastructure</h1>
-        <p>Architect & Mentor Blueprint Dashboard</p>
-    </header>
+    <div class="header">
+        <h1>AZ104-PROJ-01: Infrastructure Roadmap</h1>
+        <div style="font-weight: bold;">Completion: <span id="percent">35%</span></div>
+    </div>
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
 
-    <div class="dashboard">
-        <div class="card">
-            <h3>Overall Implementation</h3>
-            <div class="progress-container">
-                <div id="progress-bar"></div>
+    <div class="epic">
+        <div class="epic-title">PHASE 1: Planning & Design <span class="badge status-done">COMPLETED</span></div>
+        <div class="story">
+            <span class="story-title">Story 01: Architectural Blueprinting</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox" checked> Task 1: Define Naming Conventions (RG, VNet, VM)</li>
+                <li class="task-item"><input type="checkbox" checked> Task 2: Create IP Address Schema (/16 VNet, /24 Subnets)</li>
+                <li class="task-item"><input type="checkbox" checked> Task 3: Setup Project Epic & Story Hierarchy</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>Naming convention is applied to all created resources.</li>
+                    <li>IP Schema is documented and verified for no overlaps.</li>
+                </ul>
             </div>
-            <p>Project Completion: <span id="progress-text">0%</span></p>
-        </div>
-        <div class="card">
-            <h3>System Health</h3>
-            <div class="stats" id="tasks-count">0 / 12</div>
-            <p>Tasks Finalized</p>
         </div>
     </div>
 
-    <div class="phase-section">
-        <h2>Phase 1: Planning & Design (The Blueprint)</h2>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Define Naming Convention (vnet-az104-prod)</div>
-        </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Lock IP Schema (VNet 10.0.0.0/16 | Subnet /24)</div>
-        </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Select Target Azure Region (Cost & Latency)</div>
-        </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Design Traffic Flow (NSG Inbound Rules Plan)</div>
-        </div>
-    </div>
-
-    <div class="phase-section">
-        <h2>Phase 2: Core Infrastructure (The Skeleton)</h2>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Deploy Resource Group (rg-az104-web-prod)</div>
-        </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Create Virtual Network (VNet)</div>
-        </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Segment Subnets (Web & Management)</div>
-        </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Deploy Network Security Group (NSG)</div>
+    <div class="epic">
+        <div class="epic-title">PHASE 2: Core Infrastructure <span class="badge status-done">COMPLETED</span></div>
+        <div class="story">
+            <span class="story-title">Story 02: Virtual Network Deployment</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox" checked> Task 1: Provision Resource Group (rg-az104-prod-01)</li>
+                <li class="task-item"><input type="checkbox" checked> Task 2: Create VNet (10.0.0.0/16) in France Central</li>
+                <li class="task-item"><input type="checkbox" checked> Task 3: Segment Subnets (snet-web-prod & snet-mgmt-prod)</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>VNet is reachable and segmented into correct /24 ranges.</li>
+                    <li>Resource Group contains only necessary network assets.</li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="phase-section">
-        <h2>Phase 3: Compute & Security (The Brain)</h2>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Provision Windows Server VM (B-Series)</div>
+    <div class="epic" style="border: 2px solid var(--primary);">
+        <div class="epic-title">PHASE 3: Compute & Security <span class="badge status-active">IN PROGRESS</span></div>
+        <div class="story">
+            <span class="story-title">Story 03: Web Tier Compute (VM) Implementation</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox"> Task 1: Provision VM (vm-web-prod-01) via Windows Server 2022</li>
+                <li class="task-item"><input type="checkbox"> Task 2: Configure Compute Size (Standard_B1s)</li>
+                <li class="task-item"><input type="checkbox"> Task 3: Set OS Disk to Standard LRS</li>
+                <li class="task-item"><input type="checkbox"> Task 4: Enable Auto-Shutdown (18:00 Local)</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>VM is assigned a Private IP within the Web Subnet range.</li>
+                    <li>Auto-shutdown schedule is active and saved.</li>
+                </ul>
+            </div>
         </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Configure Inbound RDP Rule (Locked to My IP)</div>
+        <div class="story">
+            <span class="story-title">Story 04: Perimeter Security (NSG) Implementation</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox"> Task 1: Create NSG (nsg-web-prod-01)</li>
+                <li class="task-item"><input type="checkbox"> Task 2: Define "Allow-RDP" Rule (Port 3389) for Admin IP</li>
+                <li class="task-item"><input type="checkbox"> Task 3: Associate NSG to Web Subnet</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>Inbound Port 3389 is blocked for all IPs except your own.</li>
+                    <li>NSG is successfully linked to snet-web-prod.</li>
+                </ul>
+            </div>
         </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Enable Auto-Shutdown (Cost Control)</div>
+    </div>
+
+    <div class="epic">
+        <div class="epic-title">PHASE 4: Storage & Data Management <span class="badge status-future">UPCOMING</span></div>
+        <div class="story">
+            <span class="story-title">Story 05: Managed Data Disk Implementation</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox" disabled> Task 1: Create & Attach 32GB Standard HDD</li>
+                <li class="task-item"><input type="checkbox" disabled> Task 2: Initialize Disk and Format as Drive E: in OS</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>Data disk is visible as a separate volume within the VM.</li>
+                </ul>
+            </div>
         </div>
-        <div class="task-item">
-            <input type="checkbox" onclick="updateProgress(this)">
-            <div class="task-text">Verify Connectivity (The 'Success' Ping)</div>
+        <div class="story">
+            <span class="story-title">Story 06: Azure Files (SMB) Configuration</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox" disabled> Task 1: Create Storage Account (staz104prod01)</li>
+                <li class="task-item"><input type="checkbox" disabled> Task 2: Map log-share to VM as persistent drive</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>SMB Share is successfully mounted on VM boot.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="epic">
+        <div class="epic-title">PHASE 5: Monitoring & Decommissioning <span class="badge status-future">UPCOMING</span></div>
+        <div class="story">
+            <span class="story-title">Story 07: Performance Monitoring</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox" disabled> Task 1: Enable VM Insights & Metric Alerts</li>
+                <li class="task-item"><input type="checkbox" disabled> Task 2: Verify "Heartbeat" logs in Log Analytics</li>
+            </ul>
+            <div class="ac-box">
+                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <ul class="ac-list">
+                    <li>CPU/Memory telemetry is visible in Azure Monitor.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    function updateProgress(checkbox) {
-        const textElement = checkbox.nextElementSibling;
-        if (checkbox.checked) {
-            textElement.classList.add('completed');
-        } else {
-            textElement.classList.remove('completed');
-        }
+    // Logic to update progress bar based on checkboxes
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const progressBar = document.getElementById('progress-bar');
+    const percentText = document.getElementById('percent');
 
-        const totalTasks = document.querySelectorAll('input[type="checkbox"]').length;
-        const completedTasks = document.querySelectorAll('input[type="checkbox"]:checked').length;
-        
-        const percentage = Math.round((completedTasks / totalTasks) * 100);
-        
-        document.getElementById('progress-bar').style.width = percentage + '%';
-        document.getElementById('progress-text').innerText = percentage + '%';
-        document.getElementById('tasks-count').innerText = completedTasks + ' / ' + totalTasks;
+    function updateProgress() {
+        const total = checkboxes.length;
+        const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+        const result = Math.round((checked / total) * 100);
+        progressBar.style.width = result + "%";
+        percentText.innerText = result + "%";
     }
+
+    checkboxes.forEach(box => box.addEventListener('change', updateProgress));
+    updateProgress(); // Initial load
 </script>
 
 </body>
