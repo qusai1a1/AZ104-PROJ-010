@@ -12,186 +12,179 @@
             --text: #323130;
             --ac-bg: #f8f9fa;
             --done: #107c10;
+            --progress-bg: #c7e0f4;
+            --upcoming-bg: #edebe9;
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px; }
         .container { max-width: 1000px; margin: auto; }
         
-        /* Header & Progress Stats */
+        /* Progress Header */
         .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
-        .progress-container { background: #edebe9; border-radius: 10px; height: 20px; width: 100%; margin-bottom: 30px; overflow: hidden; }
-        #progress-bar { background: var(--done); height: 100%; width: 35%; transition: width 0.5s ease; }
+        .progress-wrapper { background: #edebe9; border-radius: 10px; height: 25px; width: 100%; margin-bottom: 40px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        #progress-bar { background: var(--done); height: 100%; width: 0%; transition: width 0.4s ease-in-out; }
         
-        /* Epic & Story Styling */
-        .epic { background: var(--card); border-radius: 8px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .epic-title { color: var(--primary); font-size: 1.4em; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        /* Epic Container */
+        .epic { background: var(--card); border-radius: 8px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: border 0.3s; }
+        .epic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .epic-title { color: var(--primary); font-size: 1.4em; font-weight: bold; text-transform: uppercase; margin: 0; }
+        
+        /* Stories & Tasks */
         .story { margin-left: 20px; margin-bottom: 25px; padding-left: 20px; border-left: 2px solid #deecf9; }
         .story-title { font-weight: 700; font-size: 1.1em; color: #004578; display: block; margin-bottom: 10px; }
-        
-        /* Tasks */
         .task-list { list-style: none; padding: 0; }
-        .task-item { margin-bottom: 8px; display: flex; align-items: center; }
-        input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
+        .task-item { margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin-right: 12px; cursor: pointer; }
         
         /* Acceptance Criteria */
-        .ac-box { background: var(--ac-bg); border: 1px dashed #c8c6c4; padding: 15px; border-radius: 4px; margin-top: 10px; }
-        .ac-title { font-size: 0.8em; font-weight: bold; color: #605e5c; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .ac-list { margin: 0; padding-left: 20px; font-size: 0.9em; }
+        .ac-box { background: var(--ac-bg); border: 1px dashed #c8c6c4; padding: 12px; border-radius: 4px; margin-top: 10px; }
+        .ac-title { font-size: 0.75em; font-weight: bold; color: #605e5c; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .ac-list { margin: 0; padding-left: 18px; font-size: 0.85em; }
 
         /* Status Badges */
-        .badge { font-size: 0.7em; padding: 4px 12px; border-radius: 15px; font-weight: bold; }
-        .status-done { background: #dff6dd; color: #107c10; }
-        .status-active { background: #c7e0f4; color: #005a9e; }
-        .status-future { background: #fff4ce; color: #797775; }
+        .badge { font-size: 0.75em; padding: 6px 14px; border-radius: 20px; font-weight: bold; text-transform: uppercase; transition: all 0.3s; }
+        .upcoming { background: #f3f2f1; color: #605e5c; border: 1px solid #c8c6c4; }
+        .in-progress { background: #c7e0f4; color: #005a9e; border: 1px solid #005a9e; }
+        .completed { background: #dff6dd; color: #107c10; border: 1px solid #107c10; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>AZ104-PROJ-01: Infrastructure Roadmap</h1>
-        <div style="font-weight: bold;">Completion: <span id="percent">35%</span></div>
+        <h1>AZ104-PROJ-01: Deployment Tracker</h1>
+        <div style="font-weight: bold;">Global Progress: <span id="percent">0%</span></div>
     </div>
-    <div class="progress-container">
+    <div class="progress-wrapper">
         <div id="progress-bar"></div>
     </div>
 
-    <div class="epic">
-        <div class="epic-title">PHASE 1: Planning & Design <span class="badge status-done">COMPLETED</span></div>
+    <div class="epic" id="epic-1">
+        <div class="epic-header">
+            <h2 class="epic-title">Phase 1: Planning & Design</h2>
+            <span class="badge upcoming" id="badge-1">Upcoming</span>
+        </div>
         <div class="story">
             <span class="story-title">Story 01: Architectural Blueprinting</span>
             <ul class="task-list">
-                <li class="task-item"><input type="checkbox" checked> Task 1: Define Naming Conventions (RG, VNet, VM)</li>
-                <li class="task-item"><input type="checkbox" checked> Task 2: Create IP Address Schema (/16 VNet, /24 Subnets)</li>
-                <li class="task-item"><input type="checkbox" checked> Task 3: Setup Project Epic & Story Hierarchy</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 1: Define Naming Conventions</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 2: Create IP Address Schema</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 3: Setup Jira/Epic Hierarchy</li>
             </ul>
             <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <span class="ac-title">Acceptance Criteria</span>
                 <ul class="ac-list">
-                    <li>Naming convention is applied to all created resources.</li>
-                    <li>IP Schema is documented and verified for no overlaps.</li>
+                    <li>Naming convention applied to all resources.</li>
+                    <li>No IP overlaps in VNet/Subnet design.</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="epic">
-        <div class="epic-title">PHASE 2: Core Infrastructure <span class="badge status-done">COMPLETED</span></div>
+    <div class="epic" id="epic-2">
+        <div class="epic-header">
+            <h2 class="epic-title">Phase 2: Core Infrastructure</h2>
+            <span class="badge upcoming" id="badge-2">Upcoming</span>
+        </div>
         <div class="story">
-            <span class="story-title">Story 02: Virtual Network Deployment</span>
+            <span class="story-title">Story 02: Network Deployment</span>
             <ul class="task-list">
-                <li class="task-item"><input type="checkbox" checked> Task 1: Provision Resource Group (rg-az104-prod-01)</li>
-                <li class="task-item"><input type="checkbox" checked> Task 2: Create VNet (10.0.0.0/16) in France Central</li>
-                <li class="task-item"><input type="checkbox" checked> Task 3: Segment Subnets (snet-web-prod & snet-mgmt-prod)</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 1: Provision Resource Group</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 2: Create VNet in France Central</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 3: Segment Subnets</li>
             </ul>
             <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <span class="ac-title">Acceptance Criteria</span>
                 <ul class="ac-list">
-                    <li>VNet is reachable and segmented into correct /24 ranges.</li>
-                    <li>Resource Group contains only necessary network assets.</li>
+                    <li>Subnets visible and correctly partitioned.</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="epic" style="border: 2px solid var(--primary);">
-        <div class="epic-title">PHASE 3: Compute & Security <span class="badge status-active">IN PROGRESS</span></div>
-        <div class="story">
-            <span class="story-title">Story 03: Web Tier Compute (VM) Implementation</span>
-            <ul class="task-list">
-                <li class="task-item"><input type="checkbox"> Task 1: Provision VM (vm-web-prod-01) via Windows Server 2022</li>
-                <li class="task-item"><input type="checkbox"> Task 2: Configure Compute Size (Standard_B1s)</li>
-                <li class="task-item"><input type="checkbox"> Task 3: Set OS Disk to Standard LRS</li>
-                <li class="task-item"><input type="checkbox"> Task 4: Enable Auto-Shutdown (18:00 Local)</li>
-            </ul>
-            <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
-                <ul class="ac-list">
-                    <li>VM is assigned a Private IP within the Web Subnet range.</li>
-                    <li>Auto-shutdown schedule is active and saved.</li>
-                </ul>
-            </div>
+    <div class="epic" id="epic-3">
+        <div class="epic-header">
+            <h2 class="epic-title">Phase 3: Compute & Security</h2>
+            <span class="badge upcoming" id="badge-3">Upcoming</span>
         </div>
         <div class="story">
-            <span class="story-title">Story 04: Perimeter Security (NSG) Implementation</span>
+            <span class="story-title">Story 03: Web Tier VM Implementation</span>
             <ul class="task-list">
-                <li class="task-item"><input type="checkbox"> Task 1: Create NSG (nsg-web-prod-01)</li>
-                <li class="task-item"><input type="checkbox"> Task 2: Define "Allow-RDP" Rule (Port 3389) for Admin IP</li>
-                <li class="task-item"><input type="checkbox"> Task 3: Associate NSG to Web Subnet</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 1: Provision VM (Windows Server 2022)</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 2: Set Compute Size (B1s)</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 3: Enable Auto-Shutdown (18:00)</li>
+            </ul>
+        </div>
+        <div class="story">
+            <span class="story-title">Story 04: Perimeter Security (NSG)</span>
+            <ul class="task-list">
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 1: Create NSG</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 2: Associate NSG to Web Subnet</li>
             </ul>
             <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
+                <span class="ac-title">Acceptance Criteria</span>
                 <ul class="ac-list">
-                    <li>Inbound Port 3389 is blocked for all IPs except your own.</li>
-                    <li>NSG is successfully linked to snet-web-prod.</li>
+                    <li>VM has private IP; RDP restricted via NSG.</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div class="epic">
-        <div class="epic-title">PHASE 4: Storage & Data Management <span class="badge status-future">UPCOMING</span></div>
-        <div class="story">
-            <span class="story-title">Story 05: Managed Data Disk Implementation</span>
-            <ul class="task-list">
-                <li class="task-item"><input type="checkbox" disabled> Task 1: Create & Attach 32GB Standard HDD</li>
-                <li class="task-item"><input type="checkbox" disabled> Task 2: Initialize Disk and Format as Drive E: in OS</li>
-            </ul>
-            <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
-                <ul class="ac-list">
-                    <li>Data disk is visible as a separate volume within the VM.</li>
-                </ul>
-            </div>
+    <div class="epic" id="epic-4">
+        <div class="epic-header">
+            <h2 class="epic-title">Phase 4: Storage & Data</h2>
+            <span class="badge upcoming" id="badge-4">Upcoming</span>
         </div>
         <div class="story">
-            <span class="story-title">Story 06: Azure Files (SMB) Configuration</span>
+            <span class="story-title">Story 05: Data Disk & Storage Accounts</span>
             <ul class="task-list">
-                <li class="task-item"><input type="checkbox" disabled> Task 1: Create Storage Account (staz104prod01)</li>
-                <li class="task-item"><input type="checkbox" disabled> Task 2: Map log-share to VM as persistent drive</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 1: Attach 32GB Data Disk</li>
+                <li class="task-item"><input type="checkbox" class="task-check"> Task 2: Map Azure File Share</li>
             </ul>
-            <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
-                <ul class="ac-list">
-                    <li>SMB Share is successfully mounted on VM boot.</li>
-                </ul>
-            </div>
         </div>
     </div>
 
-    <div class="epic">
-        <div class="epic-title">PHASE 5: Monitoring & Decommissioning <span class="badge status-future">UPCOMING</span></div>
-        <div class="story">
-            <span class="story-title">Story 07: Performance Monitoring</span>
-            <ul class="task-list">
-                <li class="task-item"><input type="checkbox" disabled> Task 1: Enable VM Insights & Metric Alerts</li>
-                <li class="task-item"><input type="checkbox" disabled> Task 2: Verify "Heartbeat" logs in Log Analytics</li>
-            </ul>
-            <div class="ac-box">
-                <span class="ac-title">Acceptance Criteria (AC)</span>
-                <ul class="ac-list">
-                    <li>CPU/Memory telemetry is visible in Azure Monitor.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
-    // Logic to update progress bar based on checkboxes
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    const progressBar = document.getElementById('progress-bar');
-    const percentText = document.getElementById('percent');
+    const epics = document.querySelectorAll('.epic');
+    const globalProgressBar = document.getElementById('progress-bar');
+    const globalPercentText = document.getElementById('percent');
 
-    function updateProgress() {
-        const total = checkboxes.length;
-        const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
-        const result = Math.round((checked / total) * 100);
-        progressBar.style.width = result + "%";
-        percentText.innerText = result + "%";
+    function updateDashboard() {
+        let totalTasks = document.querySelectorAll('.task-check').length;
+        let totalChecked = document.querySelectorAll('.task-check:checked').length;
+        
+        // Update Global Progress
+        let globalResult = Math.round((totalChecked / totalTasks) * 100);
+        globalProgressBar.style.width = globalResult + "%";
+        globalPercentText.innerText = globalResult + "%";
+
+        // Update individual Epic Status Badges
+        epics.forEach((epic, index) => {
+            const checks = epic.querySelectorAll('.task-check');
+            const checkedCount = epic.querySelectorAll('.task-check:checked').length;
+            const badge = document.getElementById(`badge-${index + 1}`);
+
+            if (checkedCount === 0) {
+                badge.innerText = "Upcoming";
+                badge.className = "badge upcoming";
+            } else if (checkedCount > 0 && checkedCount < checks.length) {
+                badge.innerText = "In Progress";
+                badge.className = "badge in-progress";
+            } else if (checkedCount === checks.length) {
+                badge.innerText = "Completed";
+                badge.className = "badge completed";
+            }
+        });
     }
 
-    checkboxes.forEach(box => box.addEventListener('change', updateProgress));
-    updateProgress(); // Initial load
+    // Event listeners
+    document.querySelectorAll('.task-check').forEach(box => {
+        box.addEventListener('change', updateDashboard);
+    });
+
+    // Run once on load
+    updateDashboard();
 </script>
 
 </body>
